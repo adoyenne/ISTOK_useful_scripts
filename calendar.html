@@ -19,9 +19,9 @@
     </form>
 
     <form method="GET">
-        <button name="type" value="Designer">Дизайнер</button>
-        <button name="type" value="Measurer">Замерщик</button>
-        <button name="type" value="Consultant">Консультант</button>
+        <button name="type" value="Designers">Дизайнеры</button>
+        <button name="type" value="Measurers">Замерщики</button>
+        <button name="type" value="Consultants">Консультанты</button>
     </form>
 
     <form method="POST">
@@ -29,7 +29,7 @@
         <label for="specialist">Выбор специалиста:</label>
         <select name="specialist" id="specialist">
             {% for specialist in specialists %}
-            <option value="{{ specialist.id }}">{{ specialist.last_name }} {{ specialist.first_name }} ({{ specialist.get_specialist_type_display }})</option>
+            <option value="{{ specialist.id }}">{{ specialist.last_name }} {{ specialist.first_name }}</option>
             {% endfor %}
         </select>
 
@@ -38,8 +38,8 @@
             <div class="day" data-date="{{ day }}">
                 {{ day }}
                 <div class="timeslots">
-                    {% for hour in "09:00 10:00 11:00 12:00 13:00 14:00 15:00 16:00 17:00 18:00 19:00 20:00".split %}
-                        {% if appointments.filter(date=day, time=datetime.strptime(hour, '%H:%M').time).exists() %}
+                    {% for hour in work_time_list %}
+                        {% if appointments.filter(date=day, time=hour).exists() %}
                             <div class="timeslot booked">{{ hour }}</div>
                         {% else %}
                             <div class="timeslot">{{ hour }}</div>
@@ -57,7 +57,7 @@
     <script>
         document.querySelectorAll('.timeslot:not(.booked)').forEach(slot => {
             slot.addEventListener('click', function() {
-                document.getElementById('date').value = this.parentElement.dataset.date;
+                document.getElementById('date').value = this.parentElement.parentElement.dataset.date;
                 document.getElementById('time').value = this.innerText;
                 document.querySelectorAll('.timeslot.selected').forEach(el => el.classList.remove('selected'));
                 this.classList.add('selected');
